@@ -34,12 +34,12 @@ parameter [9:0] duty_max = 10'd920
         end
         else begin
             
-            // ? Compute temporary value
+        
             u_temp <= u_prev 
                    + (p_term >>> SCALE) 
                    + (i_term >>> SCALE);
 
-            // ? Saturation (anti-overflow)
+          
             if (u_temp > (duty_max <<< SCALE))
                 u <= (duty_max <<< SCALE);
             else if (u_temp < (duty_min <<< SCALE))

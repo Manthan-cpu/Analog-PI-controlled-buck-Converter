@@ -1,14 +1,14 @@
 `timescale 1ns / 1ps
 
 module pi_controller#(
-parameter signed [15:0] Kp = 16'd5,   // scaled (Q10)
+parameter signed [15:0] Kp = 16'd5,  
 parameter signed [15:0] Ki = 16'd1,
 parameter SCALE = 10,
 parameter [9:0] duty_min = 10'd51,
 parameter [9:0] duty_max = 10'd920
 )(   
     input reset, 
-    input clk_10KHz,                  // ? use divided clock directly
+    input clk_10KHz,                 
     input signed [12:0] error, 
     output reg signed [9:0] duty,
     output reg signed [31:0] u

@@ -1,18 +1,16 @@
 `timescale 1ns / 1ps
 
 module system_top (
-    input  wire clk_100MHz,    // Main 100MHz board clock
-    input  wire reset,         // System reset (Active High)
-    input  wire vauxp0,        // XADC analog input positive
-    input  wire vauxn0,        // XADC analog input negative
-    output wire [9:0] duty,    // Duty cycle output from PI Controller (for probing)
-    output wire pwm_out,       // Final PWM generated signal
-    output wire adc_ready      // ADC ready flag
+    input  wire clk_100MHz,    
+    input  wire reset,         
+    input  wire vauxp0,        
+    input  wire vauxn0,       
+    output wire [9:0] duty,    
+    output wire pwm_out,     
+    output wire adc_ready      
 );
 
-    // ==========================================
-    // Internal Wires for Interconnects
-    // ==========================================
+   
     wire clk_100KHz;
     wire clk_10KHz;
     wire clk_2MHz;
@@ -22,20 +20,16 @@ module system_top (
     wire signed [12:0] error;
     wire signed [31:0] u;
 
-    // ==========================================
-    // Setpoint & Error Calculation
-    // ==========================================
+    
     localparam [11:0] SETPOINT = 12'd2048;
 
-    // Calculate Error = Setpoint - Measured Data
+   
     assign error = $signed({1'b0, SETPOINT}) - $signed({1'b0, adc_data});
 
 
-    // ==========================================
-    // Module Instantiations
-    // ==========================================
+  
 
-    // 1. Clock Divider
+
     Clock_divider_module clk_div_inst (
         .clk_100MHz (clk_100MHz),
         .reset      (reset),
@@ -44,7 +38,7 @@ module system_top (
         .clk_2MHz   (clk_2MHz)
     );
 
-    // 2. XADC Top Module
+
     xadc_top xadc_wrapper_inst (
         .clk       (clk_100MHz),
         .vauxp0    (vauxp0),
@@ -53,7 +47,6 @@ module system_top (
         .adc_ready (adc_ready)
     );
 
-    // 3. PI Controller
     pi_controller #(
         .Kp(16'd5),
         .Ki(16'd1),
@@ -68,26 +61,23 @@ module system_top (
         .u         (u)             
     );
 
-    // 4. PWM Generator
-    // Note: Driven by 100MHz clock. For a 10-bit PWM (1024 steps), 
-    // the PWM switching frequency will be 100MHz / 1024 = ~97.6 kHz.
+   
     pwm_generator pwm_inst (
         .clk        (clk_100MHz),
         .reset      (reset),
-        .duty_cycle (duty),        // Driven by PI controller output
+        .duty_cycle (duty),       
         .pwm_out    (pwm_out)
     );
 
-    // ==========================================
-    // 5. Integrated Logic Analyzer (ILA)
-    // ==========================================
+ 
+  
     ila_0 ila_inst (
-        .clk    (clk_100MHz),       // Sample using main 100MHz clock
-        .probe0 (adc_data),         // 12-bit probe
-        .probe1 (adc_ready),        // 1-bit probe
-        .probe2 (duty),             // 10-bit probe
-        .probe3 (pwm_out),          // 1-bit probe
-        .probe4 (error)             // 13-bit probe (Make sure to update IP to 13 bits!)
+        .clk    (clk_100MHz),       
+        .probe0 (adc_data),         
+        .probe1 (adc_ready),        
+        .probe2 (duty),             
+        .probe3 (pwm_out),        
+        .probe4 (error)             
     );
 
 endmodule

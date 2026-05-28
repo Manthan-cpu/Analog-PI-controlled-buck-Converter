@@ -1,5 +1,5 @@
-# Analog-PI-controlled-buck-Converter
-# ⚡ Analog PI Controlled Buck Converter on FPGA
+# PI-controlled-buck-Converter
+# PI Controlled Buck Converter on FPGA
 
 ## 📌 Overview
 This project implements a closed-loop DC-DC buck converter regulated using a PI (Proportional-Integral) controller on an FPGA. The system maintains a stable output voltage under varying input and load conditions by dynamically adjusting the PWM duty cycle.
